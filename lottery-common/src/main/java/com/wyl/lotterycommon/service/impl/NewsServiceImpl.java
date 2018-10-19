@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.function.Function;
 
 @Service
 public class NewsServiceImpl implements NewsService {
@@ -28,5 +29,16 @@ public class NewsServiceImpl implements NewsService {
     @Override
     public List<News> getList(Integer recordIndex, Integer limit) {
        return newsDao.selectByRowBounds(new News(),new RowBounds(recordIndex,limit));
+    }
+
+    @Override
+    public int delete(Long id) {
+
+        Function<Long,News> function = (i)->{
+            News news = new News();
+            news.setId(i);
+            return news;
+        };
+        return newsDao.delete(function.apply(id));
     }
 }

@@ -7,9 +7,7 @@ import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -33,6 +31,12 @@ public class NewsController {
             result.setMessage(e.getMessage());
             result.setCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
         }
+        return result;
+    }
+    @RequestMapping(value = "news/{id}",method = RequestMethod.DELETE)
+    public WYLResult<Void> delete(@PathVariable("id")Long id){
+        WYLResult<Void> result = new WYLResult<>(HttpStatus.SC_OK, null, true);
+        newsService.delete(id);
         return result;
     }
 }

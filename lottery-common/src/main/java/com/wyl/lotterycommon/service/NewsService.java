@@ -19,4 +19,6 @@ public interface NewsService {
      * @return
      */
     List<News> getList(Integer recordIndex, Integer limit);
+
+    int delete(Long id);
 }
