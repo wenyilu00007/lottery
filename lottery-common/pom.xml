@@ -27,6 +27,11 @@
 			<artifactId>lottery-datasource</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>fakepath</groupId>
+			<artifactId>json-lib</artifactId>
+			<classifier>jdk15</classifier>
+		</dependency>
 	</dependencies>
 
 
