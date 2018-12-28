@@ -20,9 +20,9 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Service
 public class EventHandleServiceImpl implements EventHandleService {
-    @Value("${sso.baseUrl}")
+    @Value("${wyl.weixin.baseurl}")
     private String ssoUrl;
-    @Value("${ksudi.context-path}")
+    @Value("${server.servlet.context-path}")
     private String ksudiContextPath;
 
     @Override

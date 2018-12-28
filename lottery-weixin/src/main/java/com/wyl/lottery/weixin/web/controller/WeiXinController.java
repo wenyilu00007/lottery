@@ -10,6 +10,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -19,10 +20,11 @@ import java.net.URLDecoder;
 
 /**
  * 微信相关
+ *
  * @author Jason.li
  */
 @Controller
-@RequestMapping(value = "${ksudi.context-path}/weixin")
+@RequestMapping(value = "${server.servlet.context-path}/weixin")
 @EnableConfigurationProperties({WeiXinConfig.class})
 public class WeiXinController {
 
@@ -30,7 +32,7 @@ public class WeiXinController {
 
     private final static String BASEDIR = "weixin/";
 
-    private final static String ERROR_MSG ="errormsg";
+    private final static String ERROR_MSG = "errormsg";
     @Autowired
     private WeiXinConfig weiXinConfig;
     @Autowired
@@ -39,31 +41,28 @@ public class WeiXinController {
     @GetMapping("/checkOauth")
     public String checkOauth(Model model, String code, String state, String redirectto) {
 
-        LOGGER.info("进入授权，登录,code:{},redirectto:{}",code,redirectto);
+        LOGGER.info("进入授权，登录,code:{},redirectto:{}", code, redirectto);
 
         String openid = accountMicroService.oauth(code);
 
-       //TODO 将用户塞入session中
+        //TODO 将用户塞入session中
 
         try {
-            redirectto = URLDecoder.decode(redirectto,"UTF-8");
+            redirectto = URLDecoder.decode(redirectto, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            LOGGER.error("授权后跳转url解码出错",e);
+            LOGGER.error("授权后跳转url解码出错", e);
         }
-        LOGGER.info("进入授权，登录,解码后redirectto:{}",redirectto);
+        LOGGER.info("进入授权，登录,解码后redirectto:{}", redirectto);
 
-        redirectto += (redirectto.contains("?") ? "&":"?")+"randm="+ System.currentTimeMillis()+"&ticket="+"123456789";
+        redirectto += (redirectto.contains("?") ? "&" : "?") + "randm=" + System.currentTimeMillis() + "&ticket=" + "123456789";
         return "redirect:" + redirectto;
     }
 
     /**
      * 绑定微信服务器
      *
-     * @param request
-     *         请求
-     *
+     * @param request 请求
      * @return 响应内容
-     *
      * @author Tony
      * @date 2017年03月07日 11:28
      */
@@ -82,11 +81,17 @@ public class WeiXinController {
         }
     }
 
+    @PostMapping(value = "/message")
+    @ResponseBody
+    protected final String acceptMessage(HttpServletRequest request) {
+        return "";
+    }
+
     boolean isLegal(HttpServletRequest request, String token) {
         String signature = request.getParameter("signature");
         String timestamp = request.getParameter("timestamp");
         String nonce = request.getParameter("nonce");
-        return SignUtil.checkSignature("tony", signature, timestamp, nonce);
+        return SignUtil.checkSignature(token, signature, timestamp, nonce);
     }
 
 
